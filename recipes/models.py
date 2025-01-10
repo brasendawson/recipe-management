@@ -15,8 +15,8 @@ class Recipe(models.Model):
     ingredients = models.TextField()
     instructions = models.TextField()
     category = models.CharField(max_length=50, choices=CATEGORY_CHOICES)
-    prep_time = models.PositiveIntegerField()  # in minutes
-    cook_time = models.PositiveIntegerField()  # in minutes
+    prep_time = models.PositiveIntegerField()  
+    cook_time = models.PositiveIntegerField() 
     servings = models.PositiveIntegerField()
     created_date = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(User, on_delete=models.CASCADE, related_name="recipes")

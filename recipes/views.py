@@ -1,7 +1,11 @@
+from django.db.models import Q
 from rest_framework import generics, permissions
 from rest_framework.filters import SearchFilter, OrderingFilter
 from .models import Recipe
 from .serializers import RecipeSerializer
+from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
+from rest_framework.views import APIView
 
 class RecipeListCreateView(generics.ListCreateAPIView):
     queryset = Recipe.objects.all()
@@ -28,3 +32,11 @@ class RecipeDetailView(generics.RetrieveUpdateDestroyAPIView):
         if instance.creator != self.request.user:
             raise permissions.PermissionDenied("You cannot delete someone else's recipe.")
         instance.delete()
+
+class RecipeByIngredientView(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
+    def get(self, request, ingredient):
+        recipes = Recipe.objects.filter(ingredients__icontains=ingredient)
+        serializer = RecipeSerializer(recipes, many=True)
+        return Response(serializer.data)
